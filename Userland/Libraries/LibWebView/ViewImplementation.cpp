@@ -126,7 +126,7 @@ void ViewImplementation::run_javascript(StringView js_source)
 
 #if !defined(AK_OS_SERENITY)
 
-ErrorOr<NonnullRefPtr<WebView::WebContentClient>> ViewImplementation::launch_web_content_process(ReadonlySpan<String> candidate_web_content_paths, EnableCallgrindProfiling enable_callgrind_profiling)
+ErrorOr<NonnullRefPtr<WebView::WebContentClient>> ViewImplementation::launch_web_content_process(ReadonlySpan<String> candidate_web_content_paths, EnableCallgrindProfiling enable_callgrind_profiling, IsLayoutTestMode is_layout_test_mode)
 {
     int socket_fds[2] {};
     TRY(Core::System::socketpair(AF_LOCAL, SOCK_STREAM, 0, socket_fds));
@@ -158,7 +158,8 @@ ErrorOr<NonnullRefPtr<WebView::WebContentClient>> ViewImplementation::launch_web
                 "--instr-atstart=no"sv,
                 path.bytes_as_string_view(),
                 "--webcontent-fd-passing-socket"sv,
-                webcontent_fd_passing_socket_string
+                webcontent_fd_passing_socket_string,
+                is_layout_test_mode == IsLayoutTestMode::Yes ? "--layout-test-mode=1"sv : "--layout-test-mode=-1"sv,
             };
             auto arguments = arguments_with_callgrind_prefix.span();
             if (enable_callgrind_profiling == EnableCallgrindProfiling::No)

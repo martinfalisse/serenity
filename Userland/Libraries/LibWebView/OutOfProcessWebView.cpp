@@ -59,7 +59,7 @@ void OutOfProcessWebView::handle_web_content_process_crash()
     load_html(builder.to_deprecated_string(), m_url);
 }
 
-void OutOfProcessWebView::create_client(EnableCallgrindProfiling)
+void OutOfProcessWebView::create_client(EnableCallgrindProfiling, IsLayoutTestMode)
 {
     m_client_state = {};
 

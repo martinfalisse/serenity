@@ -18,7 +18,8 @@ extern DeprecatedString s_serenity_resource_root;
 
 namespace Ladybird {
 
-FontPluginQt::FontPluginQt()
+FontPluginQt::FontPluginQt(bool is_layout_test_mode)
+    : m_is_layout_test_mode(is_layout_test_mode)
 {
     // Load the default SerenityOS fonts...
     Gfx::FontDatabase::set_default_fonts_lookup_path(DeprecatedString::formatted("{}/res/fonts", s_serenity_resource_root));
@@ -99,6 +100,9 @@ void FontPluginQt::update_generic_fonts()
             else
                 gfx_font = Gfx::FontDatabase::default_font();
         }
+
+        if (m_is_layout_test_mode)
+            gfx_font = Gfx::FontDatabase::the().get("SerenitySans", 16, 400, Gfx::FontWidth::Normal, 0, Gfx::Font::AllowInexactSizeMatch::Yes);
 
         m_generic_font_names[static_cast<size_t>(generic_font)] = gfx_font->family();
     };
